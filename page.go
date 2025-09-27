@@ -229,7 +229,7 @@ func (p CreatePageParams) MarshalJSON() ([]byte, error) {
 	var parent Parent
 
 	if p.DatabasePageProperties != nil {
-		parent.DatabaseID = p.ParentID
+		parent.DataSourceID = p.ParentID
 	} else if p.Title != nil {
 		parent.PageID = p.ParentID
 	}
@@ -287,7 +287,7 @@ func (p *Page) UnmarshalJSON(b []byte) error {
 			return err
 		}
 		page.Properties = props
-	case ParentTypeDatabase:
+	case ParentTypeDataSource:
 		var props DatabasePageProperties
 		err := json.Unmarshal(dto.Properties, &props)
 		if err != nil {
