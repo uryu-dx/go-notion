@@ -230,7 +230,6 @@ func (p CreatePageParams) MarshalJSON() ([]byte, error) {
 
 	if p.DatabasePageProperties != nil {
 		parent.DatabaseID = p.ParentID
-		parent.DataSourceID = p.ParentID
 	} else if p.Title != nil {
 		parent.PageID = p.ParentID
 	}
