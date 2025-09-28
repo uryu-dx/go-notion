@@ -5,6 +5,7 @@ type Parent struct {
 
 	BlockID      string `json:"block_id,omitempty"`
 	PageID       string `json:"page_id,omitempty"`
+	DatabaseID   string `json:"database_id,omitempty"`
 	DataSourceID string `json:"data_source_id,omitempty"`
 	Workspace    bool   `json:"workspace,omitempty"`
 }
