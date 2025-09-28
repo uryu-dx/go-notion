@@ -288,6 +288,7 @@ func (p *Page) UnmarshalJSON(b []byte) error {
 		}
 		page.Properties = props
 	case ParentTypeDatabase:
+	case ParentTypeDataSource:
 		var props DatabasePageProperties
 		err := json.Unmarshal(dto.Properties, &props)
 		if err != nil {

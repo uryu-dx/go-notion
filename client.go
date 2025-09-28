@@ -126,6 +126,39 @@ func (c *Client) QueryDatabase(ctx context.Context, id string, query *DatabaseQu
 	return result, nil
 }
 
+func (c *Client) QueryDataSource(ctx context.Context, id string, query *DatabaseQuery) (result DatabaseQueryResponse, err error) {
+	body := &bytes.Buffer{}
+
+	if query != nil {
+		err = json.NewEncoder(body).Encode(query)
+		if err != nil {
+			return DatabaseQueryResponse{}, fmt.Errorf("notion: failed to encode filter to JSON: %w", err)
+		}
+	}
+
+	req, err := c.newRequest(ctx, http.MethodPost, fmt.Sprintf("/data_sources/%v/query", id), body)
+	if err != nil {
+		return DatabaseQueryResponse{}, fmt.Errorf("notion: invalid request: %w", err)
+	}
+
+	res, err := c.httpClient.Do(req)
+	if err != nil {
+		return DatabaseQueryResponse{}, fmt.Errorf("notion: failed to make HTTP request: %w", err)
+	}
+	defer res.Body.Close()
+
+	if res.StatusCode != http.StatusOK {
+		return DatabaseQueryResponse{}, fmt.Errorf("notion: failed to query data_source: %w", parseErrorResponse(res))
+	}
+
+	err = json.NewDecoder(res.Body).Decode(&result)
+	if err != nil {
+		return DatabaseQueryResponse{}, fmt.Errorf("notion: failed to parse HTTP response: %w", err)
+	}
+
+	return result, nil
+}
+
 // CreateDatabase creates a new database as a child of an existing page.
 // See: https://developers.notion.com/reference/create-a-database
 func (c *Client) CreateDatabase(ctx context.Context, params CreateDatabaseParams) (db Database, err error) {
